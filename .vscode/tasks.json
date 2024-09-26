@@ -1,0 +1,64 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "unconfig buildx",
+            "type": "shell",
+            "group": "build",
+            "command": "docker buildx rm mybuilder",
+            "problemMatcher": []
+        },
+        {
+            "label": "config buildx",
+            "type": "shell",
+            "group": "build",
+            "command": "docker run --privileged --rm tonistiigi/binfmt --install all && docker buildx create --use --name mybuild",
+            "problemMatcher": []
+        },
+        {
+            "label": "docker build",
+            "type": "shell",
+            "command": "docker build -t $(cat tag) .",
+            "group": "build",
+            "problemMatcher": []
+        },
+        {
+            "label": "docker buildx",
+            "type": "shell",
+            "command": "docker buildx build --platform linux/arm/v7,linux/arm64,linux/amd64 --tag $(cat tag) .",
+            "group": "build",
+            "problemMatcher": []
+        },
+        {
+            "label": "docker buildx & push",
+            "type": "shell",
+            "command": "docker buildx build --platform linux/arm/v7,linux/arm64,linux/amd64 -t $(cat tag) . --push",
+            "group": "build",
+            "problemMatcher": []
+        },
+        {
+            "label": "docker run",
+            "type": "shell",
+            "command": "docker run --name snapcast --rm -ti -p 1704:1704 -p 1705:1705 -p 1780:1780 $(cat tag)",
+            "problemMatcher": []
+        },
+        {
+            "label": "docker run shell",
+            "type": "shell",
+            "command": "docker run --rm -ti --entrypoint=/bin/sh $(cat tag)",
+            "problemMatcher": []
+        },
+        {
+            "label": "docker attach",
+            "type": "shell",
+            "command": "docker exec -ti mopidy-dev /bin/sh",
+            "problemMatcher": []
+        },
+        {
+            "label": "docker push",
+            "type": "shell",
+            "command": "docker push $(cat tag)",
+            "problemMatcher": []
+        }
+    ]
+}

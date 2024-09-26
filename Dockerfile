@@ -1,8 +1,8 @@
-# Install SnapServer on minimal OS - script v4.0.1 [2022-03-30]
-ARG ALPINE_BASE="3.15"
+# Install SnapServer on minimal OS
+ARG ALPINE_BASE="3.20"
 
 # SnapCast build stage
-FROM alpine:${ALPINE_BASE} as compiler
+FROM alpine:${ALPINE_BASE} AS compiler
 RUN <<EOF
     apk -U add \
     alsa-lib-dev \
@@ -35,18 +35,23 @@ RUN <<EOF
 EOF
 
 # SnapWeb build stage
-FROM node:alpine as snapweb
+FROM node:alpine AS snapweb
 
 RUN <<EOF
     apk -U add build-base git
     npm install -g typescript
     git clone https://github.com/badaix/snapweb
-    make -C snapweb
+EOF
+
+RUN <<EOF
+    cd snapweb
+    npm ci
+    npm run build
 EOF
 
 # Final stage
 FROM alpine:${ALPINE_BASE}
-LABEL maintainer="Saiyato"
+LABEL maintainer="andriy@sonocotta.com"
 
 RUN <<EOF
     apk add --no-cache \
@@ -56,8 +61,8 @@ RUN <<EOF
         flac \
         libvorbis \
         opus \
-        soxr
-
+        soxr \
+        libstdc++
 EOF
 
 COPY --from=compiler snapcast/bin/snapserver /usr/local/bin/
