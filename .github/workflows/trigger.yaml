@@ -1,8 +1,9 @@
 name: trigger
 on:
-  schedule:
-    - cron: "0 10 * * *" # everyday at 10
-  workflow_dispatch: # allow manual execution
+  push:
+    branches: [ "main" ]
+    # Publish semver tags as releases.
+    tags: [ 'v*.*.*' ]
 jobs:
   check:
     runs-on: ubuntu-latest
