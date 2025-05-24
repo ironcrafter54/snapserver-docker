@@ -17,7 +17,8 @@ RUN <<EOF
     git \
     libvorbis-dev \
     opus-dev \
-    soxr-dev
+    soxr-dev \
+    alsa-utils
 EOF
 
 ARG VERSION=master
